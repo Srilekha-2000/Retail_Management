@@ -1,0 +1,32 @@
+<div class="min-h-screen flex items-start justify-center bg-gray-100">
+    <div class="max-w-6xl w-full bg-white shadow-md rounded-lg p-6 mt-12">
+
+
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create a New Zone</h1>
+
+        <%= form_with model: @zone, url: dynamic_select_zones_path, method: :post, class: "space-y-6" do |form| %>
+        <!-- Row for Zone Name -->
+        <div class="flex space-x-4">
+
+
+            <div class="w-1/2 space-y-2">
+                <%= form.label :district_id, "District", class: "block text-sm font-medium text-gray-700" %>
+                <%= form.select :district_id, District.all.pluck(:name, :id), prompt: "Select a District", required: true, class: "block w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500" %>
+            </div>
+            <div class="w-1/2 space-y-2">
+                <%= form.label :name, "Zone Name", class: "block text-sm font-medium text-gray-700" %>
+                <%= form.text_field :name, required: true, class: "block w-medium border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-800 focus:ring-indigo-500 focus:border-indigo-500" %>
+            </div>
+
+        </div>
+
+        <!-- Row for Submit Button -->
+        <div class="space-y-2">
+            <%= form.submit "Create Zone", class: "w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:outline-none transition" %>
+        </div>
+        <% end %>
+
+
+        <%= link_to "Back to Zones", dynamic_select_zones_path, class: "inline-block mt-4 text-indigo-600 hover:underline text-center" %>
+    </div>
+</div>

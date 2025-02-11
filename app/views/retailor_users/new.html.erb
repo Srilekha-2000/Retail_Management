@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-gray-50 flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white shadow-lg rounded-xl p-6 border border-gray-300 hover:shadow-2xl transition-all duration-300">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6 text-center">Assign Retailors to a Salesman</h2>
+
+        <%= form_with model: @retailor_user, url: retailor_users_path, local: true, class: "space-y-6" do |f| %>
+        <div class="space-y-4">
+            <%= f.label :visiting_time, 'Visiting date', class: 'block text-gray-800 font-semibold' %>
+            <%= f.date_field :visiting_time, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+        </div>
+
+        <div class="space-y-4">
+            <%= f.label :user_id, "Select Salesman", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= f.collection_select :user_id, @users, :id, 
+                lambda { |user| "#{user.user_detail.first_name} #{user.user_detail.last_name}" }, 
+                { include_blank: "Choose a Salesman" }, 
+                class: "block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+
+        <!-- District Selection -->
+        <div class="space-y-4">
+            <%= f.label :district_id, 'District', class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= f.select :district_id, @districts.collect { |district| [district.name, district.id] }, 
+                { prompt: 'Select a district' },
+                { class: "block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500", id: "district-select" } %>
+        </div>
+
+        <!-- Zone Selection -->
+        <div class="space-y-4">
+            <%= f.label :zone_id, 'Zone', class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= f.select :zone_id, @zones.collect { |zone| [zone.name, zone.id] }, 
+      { prompt: 'Select a zone' },
+      { class: "block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500", 
+        id: "zone-select" } %>
+        </div>
+
+        <!-- Multi-Select Retailors -->
+        <div class="space-y-4">
+            <%= f.label :retailors_id, "Select Retailors", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= f.select :retailors_id, [], {}, 
+      { multiple: true, size: 4, id: "retailors-select", 
+        class: "block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" } %>
+        </div>
+
+
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <%= f.submit "Assign Retailors", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md shadow-lg transition-all duration-300" %>
+        </div>
+        <% end %>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('district-select');
+        const zoneSelect = document.getElementById('zone-select');
+        const retailorsSelect = document.getElementById('retailors-select');
+
+        // Fetch zones when district is selected
+        districtSelect.addEventListener('change', function() {
+            const districtId = districtSelect.value;
+
+            if (districtId) {
+                fetch(`/retailors/get_zones?district_id=${districtId}`)
+                    .then(response => response.json())
+                    .then(zones => {
+                        zoneSelect.innerHTML = '<option value="">Select a zone</option>'; // Reset zones
+
+                        zones.forEach(zone => {
+                            const option = document.createElement('option');
+                            option.value = zone.id;
+                            option.textContent = zone.name;
+                            zoneSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching zones:', error);
+                    });
+            } else {
+                zoneSelect.innerHTML = '<option value="">Select a zone</option>'; // Reset zones
+            }
+        });
+
+        // Fetch retailors when zone is selected
+        zoneSelect.addEventListener('change', function() {
+            const zoneId = zoneSelect.value;
+
+            if (zoneId) {
+                fetch(`/retailor_users/get_by_zone?zone_id=${zoneId}`)
+                    .then(response => response.json())
+                    .then(retailors => {
+                        retailorsSelect.innerHTML = ''; // Clear previous options
+
+                        // Add retailor options
+                        retailors.forEach(retailor => {
+                            const option = document.createElement('option');
+                            option.value = retailor.id;
+                            option.textContent = retailor.shop_name;
+                            retailorsSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching retailors:', error);
+                    });
+            } else {
+                retailorsSelect.innerHTML = ''; // Clear retailors if no zone selected
+            }
+        });
+    });
+</script>

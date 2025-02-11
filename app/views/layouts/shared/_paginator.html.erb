@@ -1,0 +1,26 @@
+<% if paginator && paginator.total_pages > 1 %>
+<div class="flex justify-center mt-4">
+    <div class="inline-flex rounded-md shadow-sm">
+
+        <%# Previous Button %>
+        <% if paginator.prev_page %>
+        <%= link_to "&laquo; Previous".html_safe, request.path + "?page=#{paginator.prev_page}", class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 cursor-pointer" %>
+        <% else %>
+        <span class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md cursor-not-allowed"> &laquo; Previous</span>
+        <% end %>
+
+        <%# Loop through pages %>
+        <% (1..paginator.total_pages).each do |page| %>
+        <%= link_to page, request.query_parameters.merge(page: page), class: "px-4 py-2 text-sm font-medium #{'bg-blue-500 text-white' if page == paginator.current_page} border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer" %>
+        <% end %>
+
+        <%# Next Button %>
+        <% if paginator.next_page %>
+        <%= link_to "Next &raquo;", request.query_parameters.merge(page: paginator.next_page), class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 cursor-pointer" %>
+        <% else %>
+        <span class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md cursor-not-allowed">Next &raquo;</span>
+        <% end %>
+
+    </div>
+</div>
+<% end %>

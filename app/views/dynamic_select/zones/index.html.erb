@@ -1,0 +1,35 @@
+<div class="min-h-screen flex items-start justify-center bg-gray-100">
+    <div class="max-w-6xl w-full bg-white shadow-md rounded-lg p-8 mt-12">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Zones List</h1>
+
+        <!-- Create New Zone Button -->
+        <div class="mb-6 text-center">
+            <%= link_to "Create New Zone", new_dynamic_select_zone_path, class: "bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:outline-none transition" %>
+        </div>
+
+        <% if @zones.any? %>
+        <table class="w-full table-auto border-collapse border border-gray-300">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2 text-left text-gray-600 font-medium">SL No.</th>
+                    <th class="border border-gray-300 px-4 py-2 text-left text-gray-600 font-medium">Name</th>
+                    <th class="border border-gray-300 px-4 py-2 text-left text-gray-600 font-medium">District ID</th>
+                    <th class="border border-gray-300 px-4 py-2 text-left text-gray-600 font-medium">Unique Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @zones.each_with_index do |zone, index| %>
+                <tr class="hover:bg-gray-100">
+                    <td class="border border-gray-300 px-4 py-2 text-gray-700"><%= index + 1 %></td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-700"><%= zone.name %></td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-700"><%= zone.district.name %></td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-700"><%= zone.unique_code %></td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+        <% else %>
+        <p class="text-gray-600 text-center mt-4">No zones found for the selected district.</p>
+        <% end %>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-gray-100 p-6 mt-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full">
+        <!-- Navigation Bar -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">Visit Records</h1>
+            <a href="<%= new_visit_path %>" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                + Create Visit
+            </a>
+        </div>
+
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead>
+                <tr class="bg-gray-50 text-gray-700">
+                    <th class="py-3 px-6 text-left">SL.NO.</th>
+                    <th class="py-3 px-6 text-left">Visit Token</th>
+                    <th class="py-3 px-6 text-left">Visit Date</th>
+                    <th class="py-3 px-6 text-left">District</th>
+                    <th class="py-3 px-6 text-left">Zone</th>
+                    <th class="py-3 px-6 text-left">Salesman Email</th>
+                    <th class="py-3 px-6 text-left">Salesman Name</th>
+                    <th class="py-3 px-6 text-left">Retailor</th>
+                    <th class="py-3 px-6 text-left">Activity</th>
+                    <th class="py-3 px-6 text-left">Visiting Time</th>
+                    <th class="py-3 px-6 text-left">Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @visits.each_with_index do |visit, index| %>
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="py-3 px-6"><%= index+1 %></td>
+                    <td class="py-3 px-6"><%=visit&.visit_token%></td>
+                    <td class="py-3 px-6"><%= visit&.date_of_time&.strftime('%d-%m-%Y') %></td>
+
+                    <td class="py-3 px-6"><%= visit&.zone&.district&.name %></td>
+                    <td class="py-3 px-6"><%= visit&.zone&.name %></td>
+                    <td class="py-3 px-6"><%= visit&.user&.email %></td>
+
+
+                    <td class="py-3 px-6">
+                        <% visit.retailor_visits.map { |rv| rv.user.user_detail }.uniq.each do |user_detail| %>
+                        <p><%= "#{user_detail.first_name} #{user_detail.last_name}" %></p>
+                        <% end %>
+                    </td>
+
+                    <td class="py-3 px-6">
+                        <% visit.retailor_visits.each do |retailor_visit| %>
+                        <p><%= retailor_visit.retailor.shop_name %></p>
+                        <% end %>
+                    </td>
+                    <td class="py-3 px-6">
+                        <% visit.retailor_visits.each do |retailor_visit| %>
+                        <p><%= retailor_visit.activity %></p>
+                        <% end %>
+                    </td>
+                    <td class="py-3 px-6">
+                        <% visit.retailor_visits.each do |retailor_visit| %>
+                        <p><%= retailor_visit&.visiting_time&.strftime('%d-%m-%Y %I:%M %p') %></p>
+
+                        <% end %>
+                    </td>
+                    <td class="py-3 px-6"><%= visit&.order_status%></td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+
+    </div>
+</div>

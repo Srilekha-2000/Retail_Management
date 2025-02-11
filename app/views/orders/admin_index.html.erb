@@ -1,0 +1,68 @@
+<%= content_for :title, "Salesman Orders" %>
+
+<% if @orders&.any? %>
+<!-- Main container to center the content -->
+<div class="min-h-screen flex justify-center items-center bg-gray-100 px-4 py-8">
+    <!-- Card container for the table -->
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg p-6 mx-auto max-w-7xl w-full">
+        <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-8">Salesman Orders</h1>
+
+        <table class="min-w-full table-auto border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100 text-gray-600 uppercase text-sm font-semibold">
+                    <th class="px-6 py-4 text-left border border-gray-300">Order ID</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Shop Name</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Total Price</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Payment Status</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Leave Time</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Action</th>
+                    <th class="px-6 py-4 text-left border border-gray-300">Update Status</th>
+                    <th class="px-6 py-4 text-left border border-gray-300"> Current Status</th>
+                </tr>
+            </thead>
+            <%= form_with(url: orders_path, method: :get, local: true) do |form| %>
+
+            <% end %>
+            <tbody class="text-sm text-gray-700">
+                <% @orders.each do |order| %>
+                <tr class="border-t border-gray-200 hover:bg-gray-50">
+                    <td class="px-6 py-4 border border-gray-300"><%= order.unique_code %></td>
+                    <td class="px-6 py-4 border border-gray-300"><%= order.retailor.shop_name %></td>
+
+                    <td class="px-6 py-4 border border-gray-300"><%= number_to_currency(order.total_price, unit: "₹") %></td>
+                    <td class="px-6 py-4 border border-gray-300"><%= order.payment_status %></td>
+
+                    <!-- Leave Time Column -->
+                    <td class="px-6 py-4 border border-gray-300">
+                        <% if order.visit.present? %>
+                        <%= order.visit.leave_time %>
+                        <% else %>
+                        <span class="text-gray-400">N/A</span>
+                        <% end %>
+                    </td>
+
+
+                    <td class="px-6 py-4 border border-gray-300">
+
+                        <%= link_to "View", order_path(order), class: "text-blue-600 hover:text-blue-800 hover:underline" %>
+
+                    </td>
+
+                    <td class="px-6 py-4 border border-gray-300">
+
+                        <%= link_to "Change Status", edit_order_path(order), class:"text-blue-600 hover:text-blue-800 hover:underline"  %>
+
+
+                    </td>
+                    <td class="px-6 py-4 border border-gray-300"><%= order.status.humanize %></td>
+
+
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<% else %>
+<p class="text-center text-gray-600 text-lg">No orders found for the salesman.</p>
+<% end %>

@@ -1,0 +1,31 @@
+<div id="flash-messages" class="fixed top-4 right-4 z-50 w-96">
+    <% flash.each do |type, message| %>
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg shadow-lg text-white <%= flash_class(type) %> opacity-100 transition-opacity duration-500 ease-in-out" id="flash-message-<%= type %>" data-duration="3000">
+        <span><%= message %></span>
+        <button onclick="closeFlashMessage(this)" class="text-white hover:text-gray-300">&times;</button>
+    </div>
+    <% end %>
+</div>
+
+<script>
+    // Function to close the flash message
+    function closeFlashMessage(button) {
+        let messageElement = button.parentElement;
+        messageElement.style.transition = "opacity 0.5s ease";
+        messageElement.style.opacity = 0;
+        setTimeout(() => {
+            messageElement.remove();
+        }, 500); // Time for fade-out to finish before removing the element
+    }
+
+    // Automatically close flash messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('[id^="flash-message-"]');
+        flashMessages.forEach(function(message) {
+            const duration = message.getAttribute('data-duration') || 3000; // Default to 3 seconds
+            setTimeout(function() {
+                closeFlashMessage(message.querySelector('button'));
+            }, duration);
+        });
+    });
+</script>

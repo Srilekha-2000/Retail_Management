@@ -1,0 +1,206 @@
+<%= form_with(model: @order, url: orders_path, method: :post, local: true, class: "max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg space-y-8") do |form| %>
+
+<h3 class="text-2xl font-semibold text-center mb-8 text-gray-700">Order Items</h3>
+<div id="order_skus_container" class="space-y-6 mb-8">
+    <%= form.fields_for :order_skus, @order.order_skus do |sku_form| %>
+
+    <div class="order-item p-6 bg-white rounded-lg shadow-lg border border-gray-300 space-y-4">
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">Order SKU</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
+            <div class="form-group">
+                <%= sku_form.label :product_id, "Product", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= sku_form.collection_select :product_id, @products, :id, :name, 
+         prompt: "Select a Product", 
+         class: "p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500", 
+         id: "product_select" %>
+            </div>
+
+            <!-- Size Selection Dropdown (Initially Empty) -->
+            <div class="form-group">
+                <%= sku_form.label :size, "Size", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= sku_form.select :size, [], { include_blank: 'Select Size' }, 
+         class: "p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500", 
+         id: "size_select" %>
+            </div>
+
+            <div class="form-group">
+                <%= sku_form.label :quantity, "Quantity", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= sku_form.number_field :quantity, class: "p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group">
+                <%= sku_form.label :price, "Price", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= sku_form.number_field :price, class: "p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+            </div>
+
+            <!-- Delivery Date -->
+            <div class="form-group">
+                <%= sku_form.label :delivery_date, "Delivery Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= sku_form.date_field :delivery_date, class: "p-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+            </div>
+        </div>
+
+        <!-- Remove SKU Button -->
+        <div class="form-group text-center mt-4">
+            <button type="button" class="remove-sku-btn px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                Remove SKU
+            </button>
+        </div>
+    </div>
+    <% end %>
+</div>
+
+<!-- Add new SKU Button -->
+<div class="form-group text-center mb-6">
+    <button type="button" id="add-sku-btn" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+        Add Product
+    </button>
+</div>
+
+<div class="form-group text-center mb-4">
+    <label for="enable-order-details" class="flex items-center space-x-2">
+        <input type="checkbox" id="enable-order-details" class="form-checkbox h-5 w-5 text-blue-600" />
+        <span class="text-sm font-medium">Enable Order Details</span>
+    </label>
+</div>
+
+<!-- Order-specific fields -->
+<div class="order-details p-6 bg-white rounded-lg shadow-lg border border-gray-300 space-y-4" id="order-details-section" disabled>
+    <h4 class="text-lg font-semibold text-gray-800 mb-4">Order Details</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Total Price -->
+        <div class="form-group">
+            <%= form.label :total_price, "Total Price", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :total_price, class: "mt-2 p-3 border border-gray-300 rounded-lg w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <!-- Advance Payment -->
+        <div class="form-group">
+            <%= form.label :advance_payment, class: "block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :advance_payment, class: "mt-2 p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500", step: "0.01" %>
+        </div>
+        <div class="form-group">
+            <%= form.label :remaining_amount,"Due Amount", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :remaining_amount, class: "mt-2 p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500", step: "0.01" %>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="form-group">
+            <%= form.label :payment_status, class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :payment_status, ['Pending', 'Completed', 'Failed'], {}, class: "mt-2 p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <!-- Delivery Date -->
+        <div class="form-group">
+            <%= form.label :delivery_date, class: "block text-sm font-medium text-gray-700" %>
+            <%= form.date_field :delivery_date, class: "mt-2 p-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Submit Button -->
+<div class="form-group text-center mt-8">
+    <%= form.submit "Create Order", class: "px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+</div>
+<% end %>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const addSkuBtn = document.getElementById('add-sku-btn');
+        const skuContainer = document.getElementById('order_skus_container');
+
+        addSkuBtn.addEventListener('click', function() {
+            const skuItems = skuContainer.querySelectorAll('.order-item');
+            const skuIndex = skuItems.length; // Next available index
+
+            const newSkuItem = skuItems[0].cloneNode(true);
+            newSkuItem.querySelectorAll('input, select').forEach(field => {
+                field.value = ''; // Reset values
+                field.name = field.name.replace(/\[\d+\]/, `[${skuIndex}]`); // Update index
+            });
+
+            const removeBtn = newSkuItem.querySelector('button.remove-sku-btn');
+            removeBtn.disabled = false;
+
+            skuContainer.appendChild(newSkuItem);
+            updateRemoveButtons();
+        });
+
+        skuContainer.addEventListener('click', function(event) {
+            if (event.target && event.target.matches('button.remove-sku-btn')) {
+                const skuItems = skuContainer.querySelectorAll('.order-item');
+                if (skuItems.length > 1) {
+                    event.target.closest('.order-item').remove();
+                    updateRemoveButtons();
+                }
+            }
+        });
+
+        function updateRemoveButtons() {
+            const skuItems = skuContainer.querySelectorAll('.order-item');
+            skuItems.forEach((item, index) => {
+                const removeBtn = item.querySelector('button.remove-sku-btn');
+                removeBtn.disabled = (index === 0); // Disable remove button for the first item
+            });
+        }
+
+        updateRemoveButtons();
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const enableOrderDetailsCheckbox = document.getElementById('enable-order-details');
+        const orderDetailsSection = document.getElementById('order-details-section');
+        const orderFields = orderDetailsSection.querySelectorAll('input, select, textarea');
+        orderFields.forEach(field => field.setAttribute('disabled', true));
+        enableOrderDetailsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                orderFields.forEach(field => field.removeAttribute('disabled'));
+            } else {
+
+                orderFields.forEach(field => field.setAttribute('disabled', true));
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const productSelect = document.getElementById("order_order_skus_attributes_0_product_id");
+        const sizeSelect = document.getElementById("size_select");
+
+        if (productSelect) {
+
+            productSelect.addEventListener("change", function() {
+                const productId = this.value; // Get the selected product ID
+
+                if (productId) {
+                    // Make an AJAX request to fetch sizes for the selected product
+                    fetch(`/orders/get_sizes?product_id=${productId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Clear the current options in the size dropdown
+                            sizeSelect.innerHTML = '<option value="">Select Size</option>';
+
+                            // Add new options for sizes
+                            data.forEach(size => {
+                                const option = document.createElement("option");
+                                option.value = size;
+                                option.textContent = size;
+                                sizeSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error("Error fetching sizes:", error));
+                } else {
+                    // If no product is selected, clear the size dropdown
+                    sizeSelect.innerHTML = '<option value="">Select Size</option>';
+                }
+            });
+        } else {
+            console.error("Product or Size select element not found.");
+        }
+    });
+</script>

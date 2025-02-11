@@ -1,0 +1,106 @@
+<div class="min-h-screen flex items-start justify-center bg-gray-100">
+    <div class="max-w-6xl w-full bg-white shadow-md rounded-lg p-6 mt-12">
+        <h1 class="text-3xl font-semibold text-center text-gray-800 mb-8">Create Product</h1>
+
+        <%= form_with model: @product, local: true do |f| %>
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <%= f.label :name, 'Product Name', class: 'block text-gray-700 font-medium mb-1' %>
+                    <%= f.text_field :name, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                </div>
+                <div>
+                    <%= f.label :description, 'Product Description', class: 'block text-gray-700 font-medium mb-1' %>
+                    <%= f.text_field :description, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                </div>
+                <div>
+                    <%= f.label :catagory_id, 'Product Catagory', class: 'block text-gray-700 font-medium mb-1' %>
+                    <%= f.select :catagory_id, @catagories.collect { |catagory| [catagory.name, catagory.id] }, prompt: "Select a category", class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                </div>
+
+            </div>
+
+
+            <!-- Nested Product SKUs -->
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">SKUs Details</h2>
+            <div class="nested-fields space-y-6">
+                <%= f.fields_for :product_skus do |sku_form| %>
+                <div class="sku-field grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow-md">
+                    <div>
+                        <%= sku_form.label :quantity, 'Quantity', class: 'block text-gray-700 font-medium mb-1' %>
+                        <%= sku_form.number_field :quantity, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                    </div>
+                    <div>
+                        <%= sku_form.label :size, 'Product Size', class: 'block text-gray-700 font-medium mb-1' %>
+                        <%= sku_form.text_field :size, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                    </div>
+                    <div>
+                        <%= sku_form.label :price, 'Price', class: 'block text-gray-700 font-medium mb-1' %>
+                        <%= sku_form.number_field :price, step: '0.01', class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                    </div>
+                    <div>
+                        <%= sku_form.label :product_type, 'Product Type', class: 'block text-gray-700 font-medium mb-1' %>
+                        <%= sku_form.text_field :product_type, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+                    </div>
+                    <div class="col-span-full flex justify-end">
+                        <button class="remove-sku bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition duration-300">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+                <% end %>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button id="add-sku" class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg transition duration-300">
+                    Add More
+                </button>
+            </div>
+
+            <div class="mt-8">
+                <%= f.label :amount, 'Product Amount', class: 'block text-gray-700 font-medium mb-1' %>
+                <%= f.text_field :amount, class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' %>
+            </div>
+
+            <div class="flex justify-center mt-8">
+                <%= f.submit 'Create Product', class: 'bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-md transition duration-300' %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const addSkuButton = document.querySelector('#add-sku');
+        const skuContainer = document.querySelector('.nested-fields');
+
+        if (addSkuButton && skuContainer) {
+            addSkuButton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const time = new Date().getTime();
+                const firstSku = skuContainer.querySelector('.sku-field');
+                const newSku = firstSku.cloneNode(true);
+
+                newSku.querySelectorAll('input').forEach((input) => {
+                    input.value = '';
+                    input.name = input.name.replace(/\[\d+\]/, `[${time}]`);
+                    input.id = input.id.replace(/\_\d+\_/, `_${time}_`);
+                });
+
+                skuContainer.appendChild(newSku);
+            });
+
+            skuContainer.addEventListener('click', (e) => {
+                if (e.target && e.target.classList.contains('remove-sku')) {
+                    e.preventDefault();
+
+                    const skuFields = skuContainer.querySelectorAll('.sku-field');
+                    if (skuFields.length > 1) {
+                        e.target.closest('.sku-field').remove();
+                    }
+                }
+            });
+        }
+    });
+</script>

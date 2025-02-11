@@ -1,0 +1,72 @@
+<%= content_for :title, "Order Details" %>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div class="w-full max-w-3xl space-y-6 bg-white p-8 rounded-lg shadow-xl">
+
+        <!-- Page Title -->
+        <h1 class="text-3xl font-semibold text-gray-800 text-center border-b pb-4 mb-6">
+            Order Details
+        </h1>
+
+        <!-- Order Information -->
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+                Order Info
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <p><span class="font-medium text-gray-700">Order ID:</span> <%= @order.unique_code %></p>
+                <p><span class="font-medium text-gray-700">Total Price:</span> <%= number_to_currency(@order.total_price) %></p>
+                <p><span class="font-medium text-gray-700">Advance Payment:</span> <%= number_to_currency(@order.advance_payment) %></p>
+                <p><span class="font-medium text-gray-700">Payment Status:</span> <%= @order.payment_status %></p>
+                <p><span class="font-medium text-gray-700">Due Amount:</span> <%=number_to_currency( @order.remaining_amount) %></p>
+                <p><span class="font-medium text-gray-700">Delivery Date:</span> <%= @order.delivery_date.strftime("%B %d, %Y") if @order.delivery_date %></p>
+            </div>
+        </div>
+
+        <!-- Order SKUs -->
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+                Order Lists
+            </h3>
+            <% if @order.order_skus.any? %>
+            <div class="space-y-4">
+                <% @order.order_skus.each do |sku| %>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-all">
+                    <p><span class="font-medium text-gray-700">Product:</span> <%= sku.product.name if sku.product %></p>
+                    <p><span class="font-medium text-gray-700">Quantity:</span> <%= sku.quantity %></p>
+                    <p><span class="font-medium text-gray-700">Price:</span> <%= number_to_currency(sku.price) %></p>
+                    <p><span class="font-medium text-gray-700">Delivery Date:</span> <%= sku.delivery_date.strftime("%B %d, %Y") if sku.delivery_date %></p>
+                </div>
+                <% end %>
+            </div>
+            <% else %>
+            <p class="text-center text-gray-600">No SKUs associated with this order.</p>
+            <% end %>
+        </div>
+
+
+
+        <% if current_user&.user_detail&.role&.name == "Salesman" %>
+        <div class="text-center pt-6">
+        
+            <%= button_to 'Exit', exit_order_path(@order), 
+        method: :post, 
+        id: 'exit-button', 
+        class: 'inline-block px-8 py-3 rounded-md bg-red-600 text-white font-semibold hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all' %>
+        </div>
+        <% end %>
+
+
+
+        <script>
+            document.getElementById('exit-button').addEventListener('click', function(event) {
+                event.preventDefault();
+                if (confirm('Are you sure you want to exit?')) {
+                    document.getElementById('exit-button').closest('form').submit();
+                } else {
+                    return false;
+                }
+            });
+        </script>
+
+    </div>

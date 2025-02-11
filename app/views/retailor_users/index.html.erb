@@ -1,0 +1,101 @@
+<!-- Main Container -->
+<div class="max-w-screen-lg mx-auto p-8">
+    <!-- Grid Container for Each User -->
+    <% @retailor_users.group_by(&:user_id).each_with_index do |(user_id, records), index| %>
+    <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200 mx-auto mb-6">
+        <!-- User Box Header -->
+        <div class="text-lg font-semibold text-gray-800 mb-4">
+            <%= records.first.user.user_detail.first_name %> <%= records.first.user.user_detail.last_name %> - Tasks
+        </div>
+
+        <!-- Grid for Retailor Shops and Task Selection -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <!-- Headers for Each Column -->
+            <div class="font-semibold text-gray-700 p-2 text-sm bg-gray-100 rounded-tl-lg text-center">Sl No.</div>
+            <div class="font-semibold text-gray-700 p-2 text-sm bg-gray-100 text-center">Retailor Shop</div>
+            <div class="font-semibold text-gray-700 p-2 text-sm bg-gray-100 text-center">District</div>
+            <div class="font-semibold text-gray-700 p-2 text-sm bg-gray-100 text-center">Zone</div>
+            <div class="font-semibold text-gray-700 p-2 text-sm bg-gray-100 rounded-tr-lg text-center">Assign Task</div>
+
+            <!-- Loop through the Retailor Shops for the User -->
+            <% records.each_with_index do |record, record_index| %>
+            <div class="py-4 px-6 border-b border-gray-200">
+                <!-- Display Serial No. -->
+                <% if record_index == 0 %>
+                <div class="col-span-1 text-center text-sm font-medium text-gray-800">
+                    <%= index + 1 %>
+                </div>
+                <% else %>
+                <div class="col-span-1"></div>
+                <% end %>
+            </div>
+
+            <div class="py-4 px-6 border-b border-gray-200">
+                <!-- Display Retailor Shop Name -->
+                <div class="col-span-1 text-center text-sm font-medium text-gray-800">
+                    <%= record.retailor&.shop_name || "Not Assigned" %>
+                </div>
+            </div>
+
+            <div class="py-4 px-6 border-b border-gray-200">
+                <!-- Display District -->
+                <div class="col-span-1 text-center text-sm font-medium text-gray-800">
+                    <%= record.district&.name || "Not Assigned" %>
+                </div>
+            </div>
+
+            <div class="py-4 px-6 border-b border-gray-200">
+                <!-- Display Zone -->
+                <div class="col-span-1 text-center text-sm font-medium text-gray-800">
+                    <%= record.zone&.name || "Not Assigned" %>
+                </div>
+            </div>
+
+            <div class="py-4 px-6 border-b border-gray-200">
+                <!-- Task Selection Dropdown -->
+                <div class="col-span-1">
+                    <% if record.task_ids.present? %>
+                    <!-- If tasks are assigned, show a success message -->
+                    <div class="text-green-500 font-semibold text-center">
+                        Tasks have been successfully assigned!
+                    </div>
+                    <% else %>
+                    <!-- If no tasks are assigned, show the task assignment form -->
+                    <%= form_with url: assign_task_retailor_user_path(record), method: :post, local: true do |f| %>
+                    <div class="mb-4">
+                        <%= f.hidden_field :table_id, value: record.id %>
+                        <%= f.label :task_ids, "Select Tasks", class: "block text-sm font-medium text-gray-700" %>
+
+                        <!-- Normal dropdown with multiple options and checkboxes -->
+                        <%= f.select :task_ids, 
+                        options_for_select(Task.all.pluck(:name, :id), record.task_ids), 
+                        { multiple: true, class: 'form-select mt-1 block w-full border border-gray-300 rounded-lg p-2', id: "task-select" } %>
+                    </div>
+
+                    <%= f.submit "Assign Task", class: 'mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500' %>
+                    <% end %>
+                    <% end %>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+    <% end %>
+</div>
+
+<!-- Add JavaScript to initialize Choices.js -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var element = document.getElementById('task-select');
+        if (element) {
+            var choices = new Choices(element, {
+                removeItemButton: true,
+                searchEnabled: true, // Optional: Enable search if needed
+                itemSelectText: '',
+                classNames: {
+                    containerOuter: 'choices form-select mt-1 block w-full border border-gray-300 rounded-lg p-2',
+                },
+            });
+        }
+    });
+</script>

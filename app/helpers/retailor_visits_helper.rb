@@ -1,0 +1,2 @@
+module RetailorVisitsHelper
+end

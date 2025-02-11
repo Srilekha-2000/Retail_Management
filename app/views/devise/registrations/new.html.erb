@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body x-data="{ page: 'signin', loaded: true, darkMode: true, stickyMenu: false, sidebarToggle: false, scrollTop: false }" x-init="
+          darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}">
+    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <main>
+            <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <h1 class="text-title-md2 font-bold text-black dark:text-white">Retail Management System</h2>
+
+                        <nav>
+                            <ol class="flex items-center gap-2">
+                                <li>
+                                    <a class="font-small" href="index.html">Dashboard /</a>
+                                </li>
+                                <li class="font-small text-primary">Sign Up</li>
+                            </ol>
+                        </nav>
+
+                </div>
+
+            </div>
+    </div>
+
+    <!-- Forms Section Start -->
+    <div class=" bg-white shadow-default dark:bg-boxdark">
+        <div class="flex flex-wrap items-center">
+            <div class="hidden w-full xl:block xl:w-1/2">
+                <div class="px-26 py-17.5 text-center">
+                    <a class="mb-5.5 inline-block" href="index.html">
+                        <%= image_tag('logo/logo-dark.svg', alt: 'Logo') %></a>
+
+
+                    <span class="mt-15 inline-block ">
+                        <%= image_tag('illustration/illustration-03.svg', alt: 'illustration') %>
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Right Section: Form -->
+            <div class="w-full xl:w-1/2">
+                <div class="w-full border-stroke ">
+                    <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
+                        <span class="mb-1.5 block font-medium">Start for free</span>
+                        <h2 class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                            Sign Up for Registration
+                        </h2>
+                    </div>
+
+                    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                    <div class="mb-4">
+                        <div class="form-group">
+                            <%= f.label :email, "Enter Your Email", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if f.object.errors[:email].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= f.object.errors[:email].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= f.label :password, "Enter Your Password", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= f.password_field :password, autocomplete: "current-password", class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if f.object.errors[:password].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= f.object.errors[:password].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= f.label :password_confirmation, "Confirm Your Password", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if f.object.errors[:password_confirmation].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= f.object.errors[:password_confirmation].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <%= f.fields_for :user_detail do |ud| %>
+
+                        <div class="form-group">
+                            <%= ud.label :role_id, "Select Role", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.collection_select :role_id, Role.all, :id, :name, { prompt: "Select Role" }, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:role_id].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:role_id].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :first_name, "Enter Your First Name", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :first_name, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:first_name].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:first_name].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :last_name, "Enter Your Last Name", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :last_name, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:last_name].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:last_name].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+                        <div class="form-group">
+                            <%= ud.label :gender, "Select Gender", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.select :gender, options_for_select(['Male', 'Female', 'Other'], ud.object.gender), {}, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:gender].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:gender].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :date_of_birth, "Enter Your Date of Birth", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.date_select :date_of_birth, { order: [:day, :month, :year] }, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:date_of_birth].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:date_of_birth].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :proof_of_id, "Select Proof of ID", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.select :proof_of_id, options_for_select(['Aadhar', 'PAN', 'Voter ID'], ud.object.proof_of_id), {}, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:proof_of_id].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:proof_of_id].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :id_proof_details, "Enter Proof of ID Details", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :id_proof_details, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:id_proof_details].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:id_proof_details].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :building_name, "Enter Your Building Name", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :building_name, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:building_name].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:building_name].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :flat_no, "Enter Flat No.", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :flat_no, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:flat_no].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:flat_no].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :road, "Enter Road", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :road, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:road].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:road].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :block_sector, "Enter Block/Sector", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :block_sector, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:block_sector].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:block_sector].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+
+                        <div class="form-group">
+                            <%= ud.label :post_office, "Enter Post Office", class: "mb-2.5 block font-medium text-black dark:text-white" %>
+                            <%= ud.text_field :post_office, class: "w-1/2 rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" %>
+                            <% if ud.object.errors[:post_office].any? %>
+                            <div class="text-red-500 text-sm mt-1">
+                                <%= ud.object.errors[:post_office].join(", ") %>
+                            </div>
+                            <% end %>
+                        </div>
+                        <% end %>
+
+                        <div class="form-group">
+                            <%= f.submit "Create User", class: "w-1/2 cursor-pointer rounded-lg border border-primary bg-primary p-4 font-medium" %>
+                        </div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

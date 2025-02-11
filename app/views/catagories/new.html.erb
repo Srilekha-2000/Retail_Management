@@ -1,0 +1,41 @@
+<!-- app/views/categories/new.html.erb -->
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+
+        <!-- Title -->
+        <h1 class="text-2xl font-semibold mb-6 text-center text-gray-800">New Category</h1>
+
+        <%= form_with(model: @catagory, local: true, class: "space-y-6") do |form| %>
+
+        <!-- Error Messages -->
+        <% if @catagory.errors.any? %>
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+            <h2 class="font-semibold">There were some errors:</h2>
+            <ul>
+                <% @catagory.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+        <% end %>
+
+        <!-- Name Field -->
+        <div class="flex flex-col">
+            <%= form.label :name, class: "text-sm font-medium text-gray-700" %>
+            <%= form.text_field :name, class: "mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center mt-6">
+            <%= form.submit 'Create Category', class: "bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200" %>
+        </div>
+
+        <% end %>
+
+        <!-- Back Link -->
+        <div class="mt-6 text-center">
+            <%= link_to 'Back to Categories', catagories_path, class: "text-blue-600 hover:text-blue-800" %>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,11 @@
+/* Entry point for your PostCSS build */
+
+/* Import Tailwind CSS layers */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import "./satoshi.css"; /* Ensure this file exists in the same directory */
+
+
+

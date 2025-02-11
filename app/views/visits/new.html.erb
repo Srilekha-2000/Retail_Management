@@ -1,0 +1,193 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <%= form_with model: @visit, class: "bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl" do |f| %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Visit Date -->
+        <div class="mb-4">
+            <%= f.label :date_of_time, "Visit Date", class: "block text-gray-700 font-semibold" %>
+            <%= f.date_field :date_of_time, class: "mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" %>
+        </div>
+
+
+        <!-- District -->
+        <div class="mb-4">
+            <%= f.label :district, 'District', class: 'block text-gray-800 font-semibold' %>
+            <%= f.select :district_id, @districts.collect { |district| [district.name, district.id] },
+                { prompt: 'Select a district' },
+                class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all',
+                id: 'district-select' %>
+        </div>
+
+        <!-- Zone -->
+        <div class="mb-4">
+            <%= f.label :zone, 'Zone', class: 'block text-gray-800 font-semibold' %>
+            <%= f.select :zone_id, @zones.map { |zone| [zone.name, zone.id] }, { prompt: 'Select a zone' },
+    class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all',
+    id: 'zone-select' %>
+        </div>
+
+
+        <!-- Salesman -->
+        <div class="mb-4">
+            <%= f.label :user_id, "Select Salesman", class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= f.collection_select :user_id, @users, :id, 
+            lambda { |user| "#{user.user_detail.first_name} #{user.user_detail.last_name}" }, 
+            { include_blank: "Choose a Salesman" }, 
+            { class: "block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              id: "main_salesman" } %>
+        </div>
+    </div>
+
+    <!-- Retailor Visits Container -->
+    <div id="retailor_visits_container">
+        <%= f.fields_for :retailor_visits do |retailor_visit_form| %>
+        <div class="retailor-visit bg-gray-50 p-4 mb-6 rounded-lg shadow-md">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Retailor Selection -->
+                <div class="mb-4">
+                    <%= retailor_visit_form.collection_select :retailor_id, @retailors, :id, :shop_name, { include_blank: 'Choose Retailor' },
+        class: 'block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500',
+        id: 'retailor-select' %>
+                </div>
+
+
+
+                <!-- Activities -->
+                <div class="mb-4">
+                    <%= retailor_visit_form.label :activity, "Select Activities", class: "block text-gray-700 font-semibold" %>
+                    <%= retailor_visit_form.select :activity, options_for_select([['Select Activities', ''], ['Promotion', 'promotion'], ['Ordering', 'ordering'], ['Delivery', 'delivery']], retailor_visit_form.object.activity), 
+                { multiple: true }, 
+                class: "block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" %>
+                </div>
+
+
+                <div class="mb-4">
+                    <%= retailor_visit_form.label :visiting_time, "Visiting Time", class: "block text-gray-700 font-semibold" %>
+                    <%= retailor_visit_form.date_field :visiting_time, 
+                class: "block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" %>
+                </div>
+                <div class="mb-4">
+                    <%= f.label :order_status, "Order Status", class: "block text-gray-700 font-semibold" %>
+                    <%= f.select :order_status, [["Pending", "Pending"], ["In Progress", "In Progress"], ["Delivered", "Delivered"]], {}, class: "mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" %>
+                </div>
+
+            </div>
+
+            <%= retailor_visit_form.hidden_field :user_id, value: @visit.user_id %>
+
+
+            <!-- Remove Retailor Visit -->
+            <div class="remove-retailor-visit mt-2 text-center">
+                <%= link_to 'Remove Retailor Visit', '#', class: 'remove-retailor-visit text-red-500' %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+
+    <!-- Add Retailor Visit Button -->
+    <div class="add-retailor-visit text-center mt-4">
+        <%= link_to 'Add Retailor Visit', '#', class: 'text-blue-500' %>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-6 text-center">
+        <%= f.submit "Create Visit", class: "w-full py-3 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" %>
+    </div>
+
+    <% end %>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let mainSalesman = document.getElementById("main_salesman");
+        let retailorVisitsContainer = document.getElementById("retailor_visits_container");
+        document.querySelector('.add-retailor-visit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const firstRetailorVisitForm = retailorVisitsContainer.querySelector('.retailor-visit');
+            const clonedForm = firstRetailorVisitForm.cloneNode(true);
+            clonedForm.querySelectorAll('input, select').forEach(input => input.value = '');
+
+
+            clonedForm.querySelector('input[name$="[user_id]"]').value = mainSalesman.value;
+            clonedForm.querySelectorAll('input, select').forEach((input, index) => {
+                const nameAttr = input.getAttribute('name');
+                if (nameAttr) {
+                    input.setAttribute('name', nameAttr.replace(/\[\d+\]/, `[${retailorVisitsContainer.children.length}]`));
+                }
+            });
+
+            retailorVisitsContainer.appendChild(clonedForm);
+        });
+        retailorVisitsContainer.addEventListener('click', function(e) {
+            if (e.target && e.target.matches('.remove-retailor-visit')) {
+                e.preventDefault();
+                const retailorVisitForm = e.target.closest('.retailor-visit');
+                if (retailorVisitForm) {
+                    retailorVisitForm.remove();
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('district-select');
+        const zoneSelect = document.getElementById('zone-select');
+        const retailorSelect = document.getElementById('retailor-select');
+
+        // When the district is selected, fetch the corresponding zones
+        districtSelect.addEventListener('change', function() {
+            const districtId = districtSelect.value;
+
+            if (districtId) {
+                fetch(`/retailors/get_zones?district_id=${districtId}`)
+                    .then(response => response.json())
+                    .then(zones => {
+                        // Reset the zone select dropdown
+                        zoneSelect.innerHTML = '<option value="">Select a zone</option>';
+
+                        // Populate the zone select dropdown with new options
+                        zones.forEach(zone => {
+                            const option = document.createElement('option');
+                            option.value = zone.id;
+                            option.textContent = zone.name;
+                            zoneSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching zones:', error));
+            } else {
+                // Reset the zone select dropdown if no district is selected
+                zoneSelect.innerHTML = '<option value="">Select a zone</option>';
+            }
+
+            // Reset the retailor select dropdown when district is changed
+            //retailorSelect.innerHTML = '<option value="">Choose Retailor</option>';
+        });
+
+        // When the zone is selected, fetch the corresponding retailors
+        zoneSelect.addEventListener('change', function() {
+            const zoneId = zoneSelect.value;
+
+            if (zoneId) {
+                fetch(`/retailors/by_zone?zone_id=${zoneId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Reset the retailor select dropdown
+                        retailorSelect.innerHTML = '<option value="">Choose Retailor</option>';
+
+                        // Populate the retailor select dropdown with new options
+                        data.retailors.forEach(retailor => {
+                            const option = document.createElement('option');
+                            option.value = retailor.id;
+                            option.textContent = retailor.shop_name;
+                            retailorSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching retailors:', error));
+            } else {
+                // Reset the retailor select dropdown if no zone is selected
+                retailorSelect.innerHTML = '<option value="">Choose Retailor</option>';
+            }
+        });
+    });
+</script>

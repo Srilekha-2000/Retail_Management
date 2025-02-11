@@ -1,0 +1,45 @@
+<div class="container mx-auto px-4 sm:px-6 lg:px-10 mt-12">
+    <!-- Card for Roles Management -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-12">
+        <!-- Roles Management Header -->
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-900">Roles Management</h1>
+
+        <!-- Create New Role Button -->
+        <div class="text-center mb-8">
+            <%= link_to 'Create New Role', new_role_path, class: "inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105" %>
+        </div>
+
+        <!-- Existing Roles Header -->
+        <h2 class="mt-10 text-2xl font-semibold text-center text-gray-800">Existing Roles</h2>
+
+        <!-- Check if roles are available -->
+        <% if @roles.present? %>
+        <!-- Roles Table -->
+        <div class="overflow-x-auto mt-8">
+            <table class="min-w-full bg-white shadow-lg rounded-lg border border-gray-200">
+                <thead class="bg-indigo-600 text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-semibold">Role Name</th>
+                        <th class="px-6 py-4 text-left font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @roles.each do |role| %>
+                    <tr class="border-b hover:bg-gray-50 transition duration-300">
+                        <td class="px-6 py-4 text-gray-800 text-sm font-medium"><%= role.name %></td>
+                        <td class="px-6 py-4 flex items-center space-x-4 text-sm">
+                            <%= link_to 'Edit', edit_role_path(role), class: "text-indigo-500 hover:text-indigo-600 font-semibold transition duration-300 ease-in-out" %>
+                            |
+                            <%= link_to 'Delete', role_path(role), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-500 hover:text-red-600 font-semibold transition duration-300 ease-in-out" %>
+                        </td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+        <% else %>
+        <!-- No roles available message -->
+        <p class="text-center text-gray-500 mt-6">No roles available.</p>
+        <% end %>
+    </div>
+</div>

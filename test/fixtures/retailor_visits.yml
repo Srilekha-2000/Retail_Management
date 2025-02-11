@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  visit: MyString
+  retailor: one
+  status: MyString
+  activity: MyString
+
+two:
+  visit: MyString
+  retailor: two
+  status: MyString
+  activity: MyString

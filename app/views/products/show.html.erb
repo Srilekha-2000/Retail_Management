@@ -1,0 +1,50 @@
+<div class="min-h-screen bg-gray-100">
+    <!-- Navigation Bar (You can place your navigation here) -->
+
+    <!-- Main Container -->
+    <div class="flex justify-center items-center py-16">
+        <div class="w-full max-w-3xl p-8 bg-white shadow-xl rounded-lg border border-gray-200">
+            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Product Details</h2>
+
+            <!-- Product Name -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Product Name</h3>
+                <p class="text-gray-600 text-lg"><%= @product.name %></p>
+            </div>
+
+            <!-- Product Description -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Product Description</h3>
+                <p class="text-gray-600 text-lg"><%= @product.description %></p>
+            </div>
+
+            <!-- Product Amount -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Product Amount</h3>
+                <p class="text-gray-600 text-lg"><%= number_to_currency(@product.amount, unit: "₹") %></p>
+            </div>
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Product Category</h3>
+                <p class="text-gray-600 text-lg"><%= @product.catagory.name  %></p>
+            </div>
+
+
+            <!-- Product SKUs -->
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Product SKUs</h3>
+            <% @product.product_skus.each do |sku| %>
+            <div class="mb-6 bg-gray-50 p-4 rounded-lg shadow-md">
+                <p class="text-gray-600"><strong>Quantity:</strong> <%= sku.quantity %></p>
+                <p class="text-gray-600"><strong>Price:</strong> <%= number_to_currency(sku.price, unit: "₹") %></p>
+                <p class="text-gray-600"><strong>Product Type:</strong> <%= sku.product_type %></p>
+                <p class="text-gray-600"><strong>Product Size:</strong> <%= sku.size %></p>
+            </div>
+            <% end %>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between mt-8">
+                <%= link_to 'Edit Product', edit_product_path(@product), class: 'bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 transition duration-300' %>
+                <%= link_to 'Back to Products', products_path, class: 'bg-gray-600 text-white py-3 px-6 rounded-md hover:bg-gray-700 transition duration-300' %>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+<% if current_user.present? %>
+<% current_user.roles.each do |role| %>
+<p>Role: <%= role.name %></p>
+<% end %>
+<div class="flex h-screen" id="sidebarlist">
+
+    <!-- Fixed Sidebar -->
+    <aside class="fixed inset-0 w-64 bg-gray-800 text-white flex flex-col z-10">
+
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+            <h2 class="text-lg font-semibold">Dashboard</h2>
+            <button id="sidebarToggleButton" class="block" onclick="toggleSidebar()">
+                <svg class="fill-current" width="20" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18">
+                    <path d="M19 8.175H2.98748L9.36248 1.6875C9.69998 1.35 9.69998 0.825 9.36248 0.4875C9.02498 0.15 8.49998 0.15 8.16248 0.4875L0.399976 8.3625C0.0624756 8.7 0.0624756 9.225 0.399976 9.5625L8.16248 17.4375C8.31248 17.5875 8.53748 17.7 8.76248 17.7C8.98748 17.7 9.17498 17.625 9.36248 17.475C9.69998 17.1375 9.69998 16.6125 9.36248 16.275L3.02498 9.8625H19C19.45 9.8625 19.7875 9.8625 20.1125 9.175C20.1125 8.8125 19.7875 8.4875 19.45 8.4875C19.1125 8.4875 18.7875 8.175 19 8.175Z" />
+                </svg>
+            </button>
+        </div>
+
+
+
+        <!-- Sidebar Menu Items -->
+        <ul class="flex flex-col space-y-2 ml-0 mt-6">
+            <% if current_user.present? && current_user.roles.any? { |role| role.name == 'Admin' } %>
+            <li>
+                <a href="<%= roles_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H16M8 12H16M8 8H16M4 4V20M20 4V20" />
+                    </svg>
+                    Role Creation
+                </a>
+            </li>
+            <li>
+                <a href="<%= new_add_user_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    User Creation
+                </a>
+            </li>
+            <li>
+                <a href="<%= add_users_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2h-5v2zM17 16h5v-2h-5v2zM17 12h5v-2h-5v2zM5 4h3v1H5V4zM5 7h3v1H5V7zM5 10h3v1H5v-1zM5 13h3v1H5v-1zM5 16h3v1H5v-1z" />
+                    </svg>
+                    User Creation List
+                </a>
+            </li>
+            <li>
+                <a href="<%=dynamic_select_zones_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Zone Creation
+                </a>
+            </li>
+            <li>
+                <a href="<%=catagories_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Category Creation
+                </a>
+            </li>
+            <li>
+                <a href="<%= products_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2h-5v2zM17 16h5v-2h-5v2zM17 12h5v-2h-5v2zM5 4h3v1H5V4zM5 7h3v1H5V7zM5 10h3v1H5v-1zM5 13h3v1H5v-1zM5 16h3v1H5v-1z" />
+                    </svg>
+                    Products List
+                </a>
+            </li>
+
+            <li>
+                <a href="<%= new_retailor_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Shop Creation
+                </a>
+            </li>
+
+
+
+            <%
+=begin%>
+            <li>
+                <a href="<%=retailor_users_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Assign Salesman
+                </a>
+            </li>
+            <%
+=end%>
+
+
+            <li>
+                <a href="<%=visits_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Assign Salesman Visit
+                </a>
+            </li>
+
+
+            <li>
+                <a href="<%=orders_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Ordered List From Salesman
+                </a>
+            </li>
+
+
+
+            <li>
+                <a href="<%=delivary_list_orders_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Delivared List
+                </a>
+            </li>
+
+
+
+            <% elsif current_user.present? && current_user.user_detail.role.name == 'Salesman' %>
+
+
+            <a href="<%= new_retailor_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Shop
+            </a>
+            </li>
+            <li>
+                <a href="<%= shop_visits_path %>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 12H8m8 0H8m4-8v16" />
+                    </svg>
+                    Shop List for Visiting
+                </a>
+            </li>
+            <li>
+                <a href="<%=orders_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Ordered List
+                </a>
+            </li>
+
+
+
+            <li>
+                <a href="<%=delivary_list_orders_path%>" class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Delivared List
+                </a>
+            </li>
+            <% end %>
+        </ul>
+    </aside>
+
+</div>
+
+<script>
+    // Function to close the flash message
+    function toggleSidebar() {
+        const sidebar = document.getElementById("sidebarFullComponent");
+        sidebar.classList.add("hidden");
+
+        const sidebarIcon = document.getElementById("sidebarIcon");
+        sidebarIcon.classList.remove("hidden");
+    }
+</script>
+
+<% end %>

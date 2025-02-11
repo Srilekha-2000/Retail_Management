@@ -1,0 +1,91 @@
+<!-- Main Container -->
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8 mt-12">
+        <%= form_with model: @retailor, local: true do |form| %>
+        <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 text-center">Create New Shop</h2>
+
+            <!-- Shop Name and District -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div class="space-y-2">
+                    <%= form.label :shop_name, 'Shop Name', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.text_field :shop_name, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+                </div>
+                <div class="space-y-2">
+                    <%= form.label :district, 'District', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.select :district_id, @districts.collect { |district| [district.name, district.id] }, { prompt: 'Select a district' }, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all', id: 'district-select' %>
+                </div>
+            </div>
+
+            <!-- Zone and Address -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div class="space-y-2">
+                    <%= form.label :zone, 'Zone', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.select :zone_id, [], { prompt: 'Select a zone' }, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all', id: 'zone-select' %>
+                </div>
+                <div class="space-y-2">
+                    <%= form.label :address, 'Shop Locality', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.text_field :address, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+                </div>
+            </div>
+
+            <!-- Owner Name and Mobile Number -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div class="space-y-2">
+                    <%= form.label :owner_name, 'Owner Name', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.text_field :owner_name, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+                </div>
+                <div class="space-y-2">
+                    <%= form.label :mobile_number, 'Mobile Number', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.text_field :mobile_number, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+                </div>
+            </div>
+
+            <!-- PIN Code -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div class="space-y-2">
+                    <%= form.label :pin, 'PIN Code', class: 'block text-gray-800 font-semibold' %>
+                    <%= form.text_field :pin, class: 'w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all' %>
+                </div>
+            </div>
+            <%= form.hidden_field :user_id, value: current_user.id %>
+            <!-- Submit Button -->
+            <div class="mt-6">
+                <%= form.submit 'Add Shop', class: 'w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all transform hover:scale-105' %>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('district-select');
+        const zoneSelect = document.getElementById('zone-select');
+
+        districtSelect.addEventListener('change', function() {
+            const districtId = districtSelect.value;
+
+            if (districtId) {
+                fetch(`/retailors/get_zones?district_id=${districtId}`)
+                    .then(response => response.json())
+                    .then(zones => {
+                        zoneSelect.innerHTML = '<option value="">Select a zone</option>'; // Reset zones
+
+                        zones.forEach(zone => {
+                            const option = document.createElement('option');
+                            option.value = zone.id;
+                            option.textContent = zone.name;
+                            zoneSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching zones:', error);
+                    });
+            } else {
+                zoneSelect.innerHTML = '<option value="">Select a zone</option>'; // Reset zones
+            }
+        });
+    });
+</script>

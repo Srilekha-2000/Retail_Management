@@ -1,0 +1,42 @@
+<div class="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+    <div class="w-full max-w-6xl bg-white shadow-lg rounded-lg border border-gray-300 p-4">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-semibold text-gray-800 text-center">Visiting Shop List</h1>
+
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-700">
+                        <th class="py-3 px-4 text-left">SL.NO.</th>
+                        <th class="py-3 px-6 text-left">Visit Token</th>
+                        <th class="py-3 px-4 text-left">Visit Date</th>
+                      
+                        <th class="py-2 px-4 text-left">Order Status</th>
+                        <th class="py-3 px-4 text-left">Activity</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <% @visits.each_with_index do |visit, index| %>
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="py-3 px-4"><%= index+1 %></td>
+                        <td class="py-3 px-4"><%= visit&.visit_token%></td>
+                        <td class="py-3 px-4"><%= visit.date_of_time.strftime('%d-%m-%Y') if visit.date_of_time.present? %></td>
+                        
+                        <td class="py-3 px-4"><%= visit&.order_status%></td>
+                        <td class="py-3 px-6">
+                            <%= link_to "View", retailors_path, class: "text-blue-500 underline" %>
+                        </td>
+
+
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-4xl w-full bg-white p-8 rounded-xl shadow-lg">
+        <!-- Header -->
+
+
+        <%= form_with model: @visit, url: update_visit_retailor_path, method: :patch do |form| %>
+  <%= form.hidden_field :user_id, value: @visit&.user_id || current_user&.id %>
+  <%= form.hidden_field :retailor_id, value: @visit&.retailor_id %>
+
+
+        <!-- Form Container -->
+        <div class="space-y-6">
+            <!-- Date and Time of Visit -->
+            <div>
+                <%= form.label :date_of_time, "Date and Time of Visit", class: 'block text-gray-700 font-semibold mb-2' %>
+                <%= form.text_field :date_of_time, 
+                      value: Time.current.strftime("%Y-%m-%d %H:%M:%S"), 
+                      class: 'w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 
+                      readonly: true %>
+            </div>
+
+            <div>
+                <%= form.label :has_order, "Has Order", class: 'block text-gray-700 font-semibold mb-4' %>
+                <div class="flex items-center space-x-4">
+                    <label class="inline-flex items-center">
+                        <%= form.radio_button :has_order, true, class: "mr-2", id: "has_order_true" %>
+                        Yes
+                    </label>
+                    <label class="inline-flex items-center">
+                        <%= form.radio_button :has_order, false, class: "mr-2", id: "has_order_false" %>
+                        No
+                    </label>
+                </div>
+            </div>
+
+            <!-- Reason dropdown -->
+            <div id="reason_dropdown_container" class="mt-4 hidden">
+                <%= form.label :reason, "Reason for No Order", class: 'block text-gray-700 font-semibold mb-2' %>
+                <%= form.select :reason, [["Out of Stock", "Out of Stock"], ["Price Issue", "Price Issue"], ["Other", "Other"]],
+        { prompt: "Select a reason" },
+        class: 'w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+        id: "reason_dropdown" %>
+            </div>
+
+            <!-- Submit button -->
+            <div class="actions mt-6">
+                <%= form.submit "Place Order", id: "submit_order_button", 
+    class: 'w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+    disabled: true %>
+            </div>
+
+            <% end %>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const hasOrderTrue = document.getElementById("has_order_true");
+            const hasOrderFalse = document.getElementById("has_order_false");
+            const reasonDropdownContainer = document.getElementById("reason_dropdown_container");
+            const reasonDropdown = document.getElementById("reason_dropdown");
+            const submitButton = document.getElementById("submit_order_button");
+
+            submitButton.setAttribute("disabled", true);
+
+            hasOrderTrue.addEventListener("change", function() {
+                reasonDropdownContainer.classList.add("hidden");
+                reasonDropdown.value = "";
+                submitButton.value = "Place Order";
+                submitButton.removeAttribute("disabled");
+                submitButton.onclick = function() {
+                    window.location.href = `/visits/${document.getElementById("visit_id").value}/orders/new`;
+                };
+            });
+
+            hasOrderFalse.addEventListener("change", function() {
+                reasonDropdownContainer.classList.remove("hidden");
+                submitButton.setAttribute("disabled", true);
+            });
+
+            reasonDropdown.addEventListener("change", function() {
+                if (reasonDropdown.value) {
+                    submitButton.value = "Exit";
+                    submitButton.removeAttribute("disabled");
+                    submitButton.onclick = function() {
+                        window.location.href = "/retailors";
+                    };
+                } else {
+                    submitButton.setAttribute("disabled", true);
+                }
+            });
+        });
+    </script>
+</div>
