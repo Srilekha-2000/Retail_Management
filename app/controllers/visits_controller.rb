@@ -2,7 +2,7 @@ class VisitsController < ApplicationController
 
 def index
     @visits = Visit.all
-    @retailor_visits = RetailorVisit.all 
+    @retailor_visits = RetailorVisit.order(created_at: :desc)
 end
 
  def new

@@ -3,7 +3,7 @@
         <!-- Header -->
 
 
-        <%= form_with model: @visit, url: update_visit_retailor_path, method: :patch do |form| %>
+ <%= form_with model: @visit, url: update_visit_retailor_path, method: :patch do |form| %>
   <%= form.hidden_field :user_id, value: @visit&.user_id || current_user&.id %>
   <%= form.hidden_field :retailor_id, value: @visit&.retailor_id %>
 
